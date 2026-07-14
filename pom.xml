@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>python-maven-demo</artifactId>
+    <version>1.0.0</version>
+
+    <properties>
+        <python.command>python3.11</python.command>
+        <python.venv>/home/hadoop/venv-test</python.venv>
+    </properties>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+
+                <executions>
+
+                    <!-- Create Virtual Environment -->
+                    <execution>
+                        <id>create-venv</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${python.command}</executable>
+                            <arguments>
+                                <argument>-m</argument>
+                                <argument>venv</argument>
+                                <argument>${python.venv}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <!-- Install Dependencies -->
+                    <execution>
+                        <id>install-dependencies</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${python.venv}/bin/python</executable>
+                            <arguments>
+                                <argument>-m</argument>
+                                <argument>pip</argument>
+                                <argument>install</argument>
+                                <argument>-r</argument>
+                                <argument>requirements.txt</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <!-- Run Python Application -->
+                    <execution>
+                        <id>run-python</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${python.venv}/bin/python</executable>
+                            <arguments>
+                                <argument>src/main/python/app.py</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                </executions>
+
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
